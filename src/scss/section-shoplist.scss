@@ -2,10 +2,18 @@ section.shopping-list {
 	align-items: center;
 
 	ul {
-		padding-inline-start: 1rem;
+		margin: 0;
+		list-style: none;
+		padding-inline-start: 0;
 	}
 	li {
 		margin: 0;
+
+		&::before {
+			font-family: 'ionicons';
+			content: '\f372';
+			padding-right: 0.3rem;
+		}
 
 		&:hover {
 			cursor: pointer;
@@ -13,14 +21,21 @@ section.shopping-list {
 		}
 	}
 	li.strike-through {
-		text-decoration: line-through;
 		opacity: 0.4;
+		&::before {
+			font-family: 'ionicons';
+			content: '\f373';
+			padding-right: 0.3rem;
+		}
+		span {
+			text-decoration: line-through;
+		}
 	}
 
 	.button-wrapper {
 		display: grid;
 		justify-items: center;
-		grid-template-columns: auto auto;
+		grid-template-columns: 1fr 1fr 2fr;
 		gap: 0.5rem;
 		width: 100%;
 		max-width: 28rem;
