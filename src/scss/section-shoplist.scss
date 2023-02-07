@@ -2,10 +2,18 @@ section.shopping-list {
 	align-items: center;
 
 	ul {
-		padding-inline-start: 1rem;
+		margin: 0;
+		list-style: none;
+		padding-inline-start: 0;
 	}
 	li {
 		margin: 0;
+
+		&::before {
+			font-family: 'ionicons';
+			content: '\f372';
+			padding-right: 0.3rem;
+		}
 
 		&:hover {
 			cursor: pointer;
@@ -13,8 +21,15 @@ section.shopping-list {
 		}
 	}
 	li.strike-through {
-		text-decoration: line-through;
 		opacity: 0.4;
+		&::before {
+			font-family: 'ionicons';
+			content: '\f373';
+			padding-right: 0.3rem;
+		}
+		span {
+			text-decoration: line-through;
+		}
 	}
 
 	.button-wrapper {

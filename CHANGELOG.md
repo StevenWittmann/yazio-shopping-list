@@ -32,7 +32,9 @@ All notable changes to this project will be documented in this file.
 
 ### Add
 
--   desc
+-   sorting in categories
+-   add addiontional shopping items
+-   checkbox instead of bullet list
 
 ### BugFix
 

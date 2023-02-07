@@ -1,0 +1,31 @@
+// workspace settings
+{
+	"files.exclude": {
+		"node_modules": false,
+		"**/package.json": false,
+		".results": false,
+
+		"**/package-lock.json": false,
+		"**/steps.d.ts": false,
+		"**/.eslintrc.json": true,
+		"**/.gitignore": false,
+		"**/jsconfig.json": true,
+		"**/test-results.xml": true
+	},
+	"files.associations": { ".env": ".env" },
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[.env]": {
+		"editor.formatOnSave": false
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	// The number of spaces a tab is equal to.
+	"editor.tabSize": 4,
+	// Insert spaces when pressing Tab.
+	"editor.insertSpaces": true,
+	// When opening a file, `editor.tabSize` and `editor.insertSpaces` will be detected based on the file contents.
+	"editor.detectIndentation": true,
+	"prettier.printWidth": 120
+}
