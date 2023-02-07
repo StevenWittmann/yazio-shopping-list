@@ -1,0 +1,14 @@
+section.shopping-list {
+	li {
+		margin: 0;
+
+		&:hover {
+			cursor: pointer;
+			opacity: 0.9;
+		}
+	}
+	li.strike-through {
+		text-decoration: line-through;
+		opacity: 0.4;
+	}
+}

@@ -8,7 +8,6 @@ Um den Tutorials zu folgen zum Start einfach:
 
 ``` bash
 > npm i
-...
 > npm run dev
 
 ```

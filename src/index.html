@@ -4,13 +4,23 @@
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/svg+xml" href="favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Tutorial</title>
+		<title>Yazio - Shopping List</title>
 	</head>
 
 	<body>
-		<!-- Tutorial Start -->
-
-		<!-- Tutorial Ende -->
+		<h2>Yazio - Shopping List</h2>
+		<section class="import">
+			<textarea id="textarea"></textarea>
+			<button id="buttonSummarize" class="button button-summarize"
+				>Zusammenfassung</button
+			>
+			<a id="exampleData">Zeige Beispiel Daten</a>
+		</section>
+		<section class="shopping-list hidden">
+			<ul id="shoppingList"></ul>
+			<button id="buttonNew" class="button button-new">Neu</button>
+			<button id="buttonPrint" class="button button-new">Drucken</button>
+		</section>
 
 		<script type="module" src="./js/main.js"></script>
 	</body>

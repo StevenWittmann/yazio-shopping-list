@@ -46,6 +46,14 @@ html {
 	overflow-x: hidden;
 }
 
+html {
+	padding: 1rem;
+}
+
 * {
 	box-sizing: border-box;
+}
+
+.hidden {
+	display: none;
 }

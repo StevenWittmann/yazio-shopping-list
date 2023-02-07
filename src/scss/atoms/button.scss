@@ -1,0 +1,8 @@
+button {
+	cursor: pointer;
+	height: 2rem;
+
+	&:hover {
+		opacity: 0.9;
+	}
+}
