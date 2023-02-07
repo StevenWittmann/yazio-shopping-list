@@ -1,4 +1,4 @@
-import { doc } from 'prettier';
+import { Category } from './categories';
 import './../scss/style.scss';
 
 /**
@@ -8,10 +8,7 @@ import './../scss/style.scss';
 const localStorage = {
 	set: function (value) {
 		if (typeof Storage !== 'undefined') {
-			window.localStorage.setItem(
-				'yazioShoppingList',
-				JSON.stringify(value)
-			);
+			window.localStorage.setItem('yazioShoppingList', JSON.stringify(value));
 		}
 	},
 	get: function (key) {
@@ -29,6 +26,19 @@ const localStorage = {
 const _compareNumbers = (a, b) => {
 	return a - b;
 };
+
+function addGlobalStyle(css) {
+	var head, style;
+	head = document.getElementsByTagName('head')[0];
+	if (!head) {
+		return;
+	}
+	style = document.createElement('style');
+	style.type = 'text/css';
+	style.id = 'hideCrossed';
+	style.innerHTML = css;
+	head.appendChild(style);
+}
 
 /**
  * functions
@@ -63,6 +73,7 @@ const $sectionShoplist = document.querySelector('section.shopping-list');
 const $shoppingList = document.querySelector('#shoppingList');
 const $buttonNewImport = document.querySelector('#buttonNew');
 const $buttonPrint = document.querySelector('#buttonPrint');
+const $buttonHideCrossed = document.querySelector('#buttonHideCrossed');
 
 function parseYazioExportText(text) {
 	/**
@@ -73,9 +84,7 @@ function parseYazioExportText(text) {
 	const array = text.split('\n').filter((n) => n);
 
 	// filtere und entferne die überschriften aus dem array
-	const subheadline = array
-		.map((e, i) => (e.includes('Für') && e.includes('Portion') ? i : null))
-		.filter(Boolean);
+	const subheadline = array.map((e, i) => (e.includes('Für') && e.includes('Portion') ? i : null)).filter(Boolean);
 	const headline = subheadline.map((i) => i - 1);
 	const indicesToRemove = [...subheadline, ...headline].sort(_compareNumbers);
 	const filteredArray = array.filter((_, i) => !indicesToRemove.includes(i));
@@ -191,10 +200,8 @@ $buttonSummarize.addEventListener('click', () => {
 
 	function _proceedDataForEntry(object) {
 		let shoppingListItem = `${object.quantity} ${object.name} (${object.weight} ${object.unit})`;
-		if (object.quantity === 0)
-			shoppingListItem = `${object.name} (${object.weight} ${object.unit})`;
-		if (object.weight === 0)
-			shoppingListItem = `${object.name} (nach Belieben)`;
+		if (object.quantity === 0) shoppingListItem = `${object.name} (${object.weight} ${object.unit})`;
+		if (object.weight === 0) shoppingListItem = `${object.name} (nach Belieben)`;
 		return shoppingListItem;
 	}
 
@@ -209,7 +216,7 @@ $buttonSummarize.addEventListener('click', () => {
 	addClickListItemHandler();
 
 	// create local storage
-	localStorage.set($shoppingList.querySelectorAll('li'));
+	localStorage.set($shoppingList.innerHTML);
 
 	showShoppingListSection();
 });
@@ -279,6 +286,11 @@ Feta (50 g)
     `;
 });
 
+$buttonHideCrossed.addEventListener('click', () => {
+	const currentlyHidden = document.querySelector('#hideCrossed');
+	currentlyHidden ? currentlyHidden.remove() : addGlobalStyle('li.strike-through {display:none}');
+});
+
 function addClickListItemHandler() {
 	const listItem = $shoppingList.querySelectorAll('li');
 	for (let i = 0; i < listItem.length; i++) {
@@ -291,46 +303,18 @@ function addClickListItemHandler() {
 
 function setCategory(name) {
 	let category = 'Unkategorisiert';
-	const veg = [
-		'Blumenkohl',
-		'Brokkoli',
-		'Kirschtomaten',
-		'Salatgurke',
-		'Zwiebel',
-	];
-	if (veg.some((item) => name.includes(item))) category = 'Gemüse';
-	if (
-		[
-			'Getrocknete Tomaten',
-			'Cashewkerne',
-			'Gnocchi',
-			'Hefeflocken',
-			'Kartoffeln',
-			'Pankomehl',
-		].some((item) => name.includes(item))
-	)
-		category = 'Trockenregal';
-	if (
-		[
-			'Basilikum',
-			'Feta',
-			'Frischkäse',
-			'Haferdrink',
-			'Knoblauchpulver',
-			'Mandeln',
-			'Pesto Verde',
-			'Rucola',
-			'Thymian',
-			'Weintrauben',
-			'Zitrone',
-		].some((item) => name.includes(item))
-	)
-		category = 'Frische Zutaten';
-	if (
-		['Olivenöl', 'Pfeffer und Salz', 'Rotweinessig'].some((item) =>
-			name.includes(item)
-		)
-	)
-		category = 'Kräuter, Öle und Gewürze';
+	if (Category.VEGETABLES.items.some((item) => name.includes(item))) {
+		category = Category.VEGETABLES.name;
+	} else if (Category.HERBS.items.some((item) => name.includes(item))) {
+		category = Category.HERBS.name;
+	} else if (Category.COOLSHELF.items.some((item) => name.includes(item))) {
+		category = Category.COOLSHELF.name;
+	} else if (Category.DRYSHELF.items.some((item) => name.includes(item))) {
+		category = Category.DRYSHELF.name;
+	} else if (Category.DRINKS.items.some((item) => name.includes(item))) {
+		category = Category.DRINKS.name;
+	} else if (Category.BREAD.items.some((item) => name.includes(item))) {
+		category = Category.BREAD.name;
+	}
 	return category;
 }
