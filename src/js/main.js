@@ -174,6 +174,7 @@ $buttonNewImport.addEventListener('click', () => {
 
     // show import section
     $sectionImport.classList.remove('hidden');
+    $textarea.value = '';
 
     // hide shopping list section
     $sectionShoplist.classList.add('hidden');

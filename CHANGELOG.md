@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 <!-- Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file. -->
 
+## [0.2.1]
+
+### BugFix
+
+-   clear textarea, if click on new
+-   centered main element, max-width for bigger vps
+
 ## [0.2.0]
 
 ### Add
