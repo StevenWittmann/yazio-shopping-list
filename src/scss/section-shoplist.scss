@@ -1,4 +1,9 @@
 section.shopping-list {
+	align-items: center;
+
+	ul {
+		padding-inline-start: 1rem;
+	}
 	li {
 		margin: 0;
 
@@ -10,5 +15,14 @@ section.shopping-list {
 	li.strike-through {
 		text-decoration: line-through;
 		opacity: 0.4;
+	}
+
+	.button-wrapper {
+		display: grid;
+		justify-items: center;
+		grid-template-columns: auto auto;
+		gap: 0.5rem;
+		width: 100%;
+		max-width: 28rem;
 	}
 }

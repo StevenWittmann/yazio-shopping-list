@@ -1,8 +1,8 @@
 {
-	"name": "ud-basic-webdev-setup",
+	"name": "yazio-shopping-list",
 	"private": false,
-	"version": "2.1.0",
-	"discription": "Bei diesem Repository handelt es sich um meine \"Test-/Entwicklungsumgebung\" für alle meine YouTube Tutorials. Sie basiert auf Vite, JS und SCSS",
+	"version": "0.2.0",
+	"discription": "",
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",

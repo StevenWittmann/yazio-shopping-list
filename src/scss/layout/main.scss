@@ -1,0 +1,18 @@
+.main-layout {
+	min-height: 100vh;
+	min-height: 100dvh;
+
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+
+	padding: 0 2rem;
+
+	header {
+		text-align: center;
+	}
+
+	footer {
+		padding: 1rem;
+		text-align: right;
+	}
+}
