@@ -1,9 +1,22 @@
-button {
+.button {
+	background: none;
+	border: none;
+
 	cursor: pointer;
 	height: 2rem;
 	width: 100%;
 
 	&:hover {
 		opacity: 0.9;
+	}
+
+	&-primary {
+		background-color: $prime;
+	}
+
+	&-secondary {
+		border: 1px solid $prime;
+		color: $prime;
+		background-color: $ciSecond;
 	}
 }

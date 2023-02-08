@@ -10,7 +10,7 @@
 			sizes="16x16"
 			href="icons/favicon-16x16.png"
 			media="(prefers-color-scheme: dark)" />
-		<link href="favicon-light-16x16.png" rel="icon" media="(prefers-color-scheme: light)" />
+		<link href="icons/favicon-light-16x16.png" rel="icon" media="(prefers-color-scheme: light)" />
 		<link rel="manifest" href="/site.webmanifest" />
 		<link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5" />
 		<meta name="msapplication-TileColor" content="#da532c" />
@@ -28,21 +28,24 @@
 			<main
 				><section class="import">
 					<textarea id="textarea"></textarea>
-					<button id="buttonSummarize" class="button button-summarize">Zusammenfassung</button>
-					<a rel="nofollow" id="exampleData">Zeige Beispiel Daten</a>
+					<button id="buttonSummarize" class="button button-primary">Zusammenfassung</button>
+					<button id="exampleData" class="button button-secondary">Zeige Beispiel Daten</button>
 				</section>
 				<section class="shopping-list hidden">
 					<ul id="shoppingList"></ul>
 					<div class="button-wrapper">
-						<button id="buttonNew" class="button button-new">Neu</button>
-						<button id="buttonPrint" class="button button-new">Drucken</button>
-						<button id="buttonHideCrossed" class="button button-hide"
-							>Verstecke Zutaten im Warenkorb</button
-						>
+						<button id="buttonNew" class="button button-primary button-new">⇦ Zurück</button>
+						<button id="buttonPrint" class="button button-secondary button-new">Drucken</button>
 					</div>
-				</section></main
-			>
-			<footer>letztes Update: 06.02.2023</footer>
+					<div class="button-wrapper">
+						<label for="buttonHideCrossed">Verstecke Durchgestrichenes</label>
+						<label class="switch">
+							<input id="buttonHideCrossed" type="checkbox" />
+							<span class="slider round"></span>
+						</label>
+					</div> </section
+			></main>
+			<footer>letztes Update: 08.02.2023</footer>
 		</div>
 
 		<script type="module" src="./js/main.js"></script>
