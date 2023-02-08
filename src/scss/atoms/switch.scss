@@ -39,11 +39,11 @@
 }
 
 input:checked + .slider {
-	background-color: $ciGreen;
+	background-color: $prime;
 }
 
 input:focus + .slider {
-	box-shadow: 0 0 1px $ciGreen;
+	box-shadow: 0 0 1px $prime;
 }
 
 input:checked + .slider:before {

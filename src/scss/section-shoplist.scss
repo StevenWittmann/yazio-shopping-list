@@ -41,4 +41,8 @@ section.shopping-list {
 		align-items: center;
 		justify-content: center;
 	}
+
+	label[for='buttonHideCrossed'] {
+		font-size: 0.8rem;
+	}
 }
