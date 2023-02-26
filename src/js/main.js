@@ -1,6 +1,8 @@
 import { Category } from './categories';
 import { Fractions } from './fractions';
+import { Pluralize } from './pluralize';
 import './../scss/style.scss';
+import pluralize, { plural } from 'pluralize';
 
 /**
  * helper functions
@@ -121,6 +123,8 @@ function parseYazioExportText(text) {
 		if (!isNaN(name.substring(0, name.indexOf(' ')))) {
 			name = name.replace(quantity + ' ', '');
 		}
+		name = name.replaceAll('.', ',');
+		name = Pluralize.do(name);
 
 		let category = setCategory(name);
 
