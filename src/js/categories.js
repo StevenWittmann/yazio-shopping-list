@@ -8,6 +8,7 @@ export const Category = {
 			'Babyspinat, frisch',
 			'Brokkoli',
 			'Champignons',
+			'Riesenchampignons',
 			'Champignons, Konserve',
 			'Cherrytomaten',
 			'Eisbergsalat',
