@@ -9,6 +9,7 @@ export const Category = {
 			'Brokkoli',
 			'Champignons',
 			'Riesenchampignons',
+			'Riesenchampignon(s)',
 			'Champignons, Konserve',
 			'Cherrytomaten',
 			'Eisbergsalat',
