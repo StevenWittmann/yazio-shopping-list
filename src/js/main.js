@@ -1,4 +1,5 @@
 import { Category } from './categories';
+import { Fractions } from './fractions';
 import './../scss/style.scss';
 
 /**
@@ -107,12 +108,14 @@ function parseYazioExportText(text) {
 	const shoppingList = {};
 	const catShoppingList = {};
 	for (const [index, item] of filteredArray.entries()) {
-		// startet mit nummer
-		let quantity = item.match(/^\d/) ? item.split(' ')[0] : '';
-
 		// alles außer die sachen in der klammer
 		let name = item.match(/^(.*?)\s+\(.*?\)$/);
 		name = name ? name[1] : 'Fehler';
+
+		name = Fractions.convert(name);
+
+		// startet mit nummer
+		let quantity = name.match(/^\d/) ? name.split(' ')[0] : '';
 
 		// startsWith do not work, if e.g. 1½
 		if (!isNaN(name.substring(0, name.indexOf(' ')))) {
@@ -131,10 +134,12 @@ function parseYazioExportText(text) {
 		let [weight, unit] = braces.split(' ');
 
 		// Edgecase (nach Belieben)
-		if (weight === 'nach') {
+		if (weight === 'nach' || unit === 'taste') {
 			weight = 0;
 			unit = 0;
 		}
+
+		weight = Fractions.convert(weight);
 
 		// konvertieren von 1/2 nach decimals ( ⅔ Zwiebel (53⅓ g), 1⅓ Knoblauchzehen (4 g) nicht einfach möglich -> neuen Eintrag dafür anlegen
 		const weightIsNumber = !isNaN(weight);
@@ -156,8 +161,8 @@ function parseYazioExportText(text) {
 			if (weightIsNumber) {
 				catShoppingList[category].forEach((el, idx, arr) => {
 					if (el.name == name) {
-						catShoppingList[category].quantity += quantity;
-						catShoppingList[category].weight += weight;
+						catShoppingList[category][idx].quantity += quantity;
+						catShoppingList[category][idx].weight += weight;
 					} else if (idx === arr.length - 1 && el.name != name) {
 						catShoppingList[category].push({
 							name: name,
@@ -202,7 +207,7 @@ $buttonSummarize.addEventListener('click', () => {
 		let shoppingListItem = `${object.quantity} ${object.name} (${object.weight} ${object.unit})`;
 		if (object.quantity === 0) shoppingListItem = `${object.name} (${object.weight} ${object.unit})`;
 		if (object.weight === 0) shoppingListItem = `${object.name} (nach Belieben)`;
-		return shoppingListItem;
+		return shoppingListItem.replaceAll('.', ',');
 	}
 
 	let $list = '';
