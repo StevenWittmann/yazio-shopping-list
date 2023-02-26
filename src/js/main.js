@@ -2,7 +2,6 @@ import { Category } from './categories';
 import { Fractions } from './fractions';
 import { Pluralize } from './pluralize';
 import './../scss/style.scss';
-import pluralize, { plural } from 'pluralize';
 
 /**
  * helper functions
