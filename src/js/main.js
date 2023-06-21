@@ -10,7 +10,7 @@ import './../scss/style.scss';
 const localStorage = {
 	set: function (value) {
 		if (typeof Storage !== 'undefined') {
-			window.localStorage.setItem('yazioShoppingList', JSON.stringify(value));
+			window.localStorage.setItem('microbudget', JSON.stringify(value));
 		}
 	},
 	get: function (key) {
@@ -43,286 +43,72 @@ function addGlobalStyle(css) {
 }
 
 /**
- * functions
- */
-
-function createListItem(name, index, className = 'to-buy') {
-	const $listItem = document.createElement('li');
-	$listItem.innerText = name;
-	$listItem.dataset.itemNo = index;
-	$listItem.classList.add(className);
-	$listItem.onclick = (event) => {
-		listItemClickHandler(event);
-	};
-	$shoppingList.appendChild($listItem);
-}
-
-function showShoppingListSection() {
-	$sectionImport.classList.add('hidden');
-	$sectionShoplist.classList.remove('hidden');
-}
-
-/**
  * $html elements to interact with
  */
 
-const $sectionImport = document.querySelector('section.import');
-const $textarea = document.querySelector('#textarea');
-const $buttonSummarize = document.querySelector('#buttonSummarize');
-const $linkExampleData = document.querySelector('#exampleData');
+const btnExpense = document.querySelector('#btnExpense');
+const expense = document.querySelector('#expense');
+const startBudget = document.querySelector('#startBudget');
+const dayOfPayment = document.querySelector('#dayOfPayment');
+const moneyLeft = document.querySelector('#moneyLeft');
+const outputMoneyPerDay = document.querySelector('#outputMoneyPerDay');
 
-const $sectionShoplist = document.querySelector('section.shopping-list');
-const $shoppingList = document.querySelector('#shoppingList');
-const $buttonNewImport = document.querySelector('#buttonNew');
-const $buttonPrint = document.querySelector('#buttonPrint');
-const $buttonHideCrossed = document.querySelector('#buttonHideCrossed');
+/**
+ * functions
+ */
 
-function parseYazioExportText(text) {
-	/**
-	 * START FILTERUNG
-	 */
+const updateFrontend = () => {
+	const budget = localStorage.get('microbudget');
+	if (budget) {
+		console.log(budget);
+		startBudget.value = budget.startBudget;
+		moneyLeft.value = budget.moneyLeft;
+		dayOfPayment.value = budget.dayOfPayment;
 
-	// item pro absatz, leere items werden gefiltert
-	const array = text.split('\n').filter((n) => n);
+		outputMoneyPerDay.innerHTML = (budget.startBudget / 30).toFixed(2).replace('.', ',') + ' €';
 
-	// filtere und entferne die überschriften aus dem array
-	const subheadline = array.map((e, i) => (e.includes('Für') && e.includes('Portion') ? i : null)).filter(Boolean);
-	const headline = subheadline.map((i) => i - 1);
-	const indicesToRemove = [...subheadline, ...headline].sort(_compareNumbers);
-	const filteredArray = array.filter((_, i) => !indicesToRemove.includes(i));
-
-	// sortiere die Zutaten liste alphabetisch
-	// wenn nur 2 Zeichen vor dem ersten Leerzeichen kommen, ist es wahrscheinlich eine Mengenangabe -> ignorieren
-	filteredArray.sort(function (a, b) {
-		a = a.indexOf(' ') < 3 ? a.substring(a.indexOf(' ') + 1) : a;
-		b = b.indexOf(' ') < 3 ? b.substring(b.indexOf(' ') + 1) : b;
-		return a.localeCompare(b);
-	});
-
-	// entferne Yazio string
-	if (filteredArray[0] === '#YAZIO') filteredArray.shift();
-
-	/**
-	 * START PARSEN DER DATEN ZUR DARSTELLUNG ALS EINKAUFSLISTEN ITEM
-	 */
-
-	const shoppingList = {};
-	const catShoppingList = {};
-	for (const [index, item] of filteredArray.entries()) {
-		// alles außer die sachen in der klammer
-		let name = item.match(/^(.*?)\s+\(.*?\)$/);
-		name = name ? name[1] : 'Fehler';
-
-		name = Fractions.convert(name);
-
-		// startet mit nummer
-		let quantity = name.match(/^\d/) ? name.split(' ')[0] : '';
-
-		// startsWith do not work, if e.g. 1½
-		if (!isNaN(name.substring(0, name.indexOf(' ')))) {
-			name = name.replace(quantity + ' ', '');
-		}
-		name = name.replaceAll('.', ',');
-		name = Pluralize.do(name);
-
-		let category = setCategory(name);
-
-		// die sachen in der Klammer
-		// Edgecase (1 EL, 14 ml) hole ml, denn es ist relevanter für den Einkauf
-		let braces = item.match(/\((.*?)\)/);
-		braces = braces ? braces[1] : 'Fehler';
-		if (braces.includes(',')) {
-			braces = braces.substring(braces.indexOf(', ') + 2);
-		}
-		let [weight, unit] = braces.split(' ');
-
-		// Edgecase (nach Belieben)
-		if (weight === 'nach' || unit === 'taste') {
-			weight = 0;
-			unit = 0;
-		}
-
-		weight = Fractions.convert(weight);
-
-		// konvertieren von 1/2 nach decimals ( ⅔ Zwiebel (53⅓ g), 1⅓ Knoblauchzehen (4 g) nicht einfach möglich -> neuen Eintrag dafür anlegen
-		const weightIsNumber = !isNaN(weight);
-		weight = weightIsNumber ? Number(weight) : weight;
-		quantity = !isNaN(quantity) ? Number(quantity) : 0;
-
-		// kategorie gibts nicht? anlegen
-		if (!catShoppingList[category]) {
-			catShoppingList[category] = [
-				{
-					name: name,
-					quantity: Number(quantity),
-					weight: weight,
-					unit: unit,
-				},
-			];
-		} else {
-			// gibt es artikel in kategorie?
-			if (weightIsNumber) {
-				catShoppingList[category].forEach((el, idx, arr) => {
-					if (el.name == name) {
-						catShoppingList[category][idx].quantity += quantity;
-						catShoppingList[category][idx].weight += weight;
-					} else if (idx === arr.length - 1 && el.name != name) {
-						catShoppingList[category].push({
-							name: name,
-							quantity: Number(quantity),
-							weight: weight,
-							unit: unit,
-						});
-					}
-				});
-			} else {
-				catShoppingList[category].push({
-					name: name,
-					quantity: Number(quantity),
-					weight: weight,
-					unit: unit,
-				});
-			}
-		}
+		// calculate days till month end
+		const today = new Date();
+		const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+		const daysTillNextPayment = lastDayOfMonth.getDate() - today.getDate() + parseInt(dayOfPayment.value || 1);
+		const outputDaysTillMonthEnd = document.querySelector('#outputDaysTillMonthEnd');
+		const outputMoneyPerDayCalc = document.querySelector('#outputMoneyPerDayCalc');
+		outputDaysTillMonthEnd.innerHTML = `Geld pro Tag (${daysTillNextPayment} Tage)`;
+		outputMoneyPerDayCalc.innerHTML = (budget.moneyLeft / daysTillNextPayment).toFixed(2).replace('.', ',') + ' €';
+	} else {
+		localStorage.set({ startBudget: 999, dayOfPayment: 1, moneyLeft: 999 });
+		updateFrontend();
 	}
-
-	return catShoppingList;
-}
+};
 
 /**
  * event listeners
  */
 
 window.addEventListener('load', () => {
-	const shoppingList = localStorage.get('yazioShoppingList');
-	if (!shoppingList) return;
-	$shoppingList.innerHTML = shoppingList;
-	addClickListItemHandler();
-	showShoppingListSection();
+	updateFrontend();
+});
+startBudget.addEventListener('change', (ev) => {
+	let newValue = ev.currentTarget.value.replace(',', '.');
+	const budget = localStorage.get('microbudget');
+	budget.startBudget = parseFloat(newValue);
+	budget.moneyLeft = parseFloat(newValue);
+	localStorage.set(budget);
+	updateFrontend();
 });
 
-$buttonSummarize.addEventListener('click', () => {
-	const yazioParsedObject = parseYazioExportText($textarea.value.trim());
-	const neededProducts = Object.values(yazioParsedObject);
-	const productGroupNames = Object.keys(yazioParsedObject);
-
-	function _proceedDataForEntry(object) {
-		let shoppingListItem = `${object.quantity} ${object.name} (${object.weight} ${object.unit})`;
-		if (object.quantity === 0) shoppingListItem = `${object.name} (${object.weight} ${object.unit})`;
-		if (object.weight === 0) shoppingListItem = `${object.name} (nach Belieben)`;
-		return shoppingListItem.replaceAll('.', ',');
-	}
-
-	let $list = '';
-	neededProducts.forEach((el, idx) => {
-		$list += `<h3>${productGroupNames[idx]}</h3>`;
-		el.forEach((entry) => {
-			$list += `<li><span>${_proceedDataForEntry(entry)}</span></li>`;
-		});
-	});
-	$shoppingList.innerHTML = $list;
-	addClickListItemHandler();
-
-	// create local storage
-	localStorage.set($shoppingList.innerHTML);
-
-	showShoppingListSection();
+dayOfPayment.addEventListener('change', (ev) => {
+	let newValue = ev.currentTarget.value.replace(',', '.');
+	const budget = localStorage.get('microbudget');
+	budget.dayOfPayment = parseFloat(newValue);
+	localStorage.set(budget);
+	updateFrontend();
 });
 
-$buttonNewImport.addEventListener('click', () => {
-	// delete local storage
-	localStorage.delete('yazioShoppingList');
-
-	// show import section
-	$sectionImport.classList.remove('hidden');
-	$textarea.value = '';
-
-	// hide shopping list section
-	$sectionShoplist.classList.add('hidden');
-	$shoppingList.innerHTML = '';
+btnExpense.addEventListener('click', () => {
+	const budget = localStorage.get('microbudget');
+	budget.moneyLeft -= parseFloat(expense.value || 0);
+	localStorage.set(budget);
+	updateFrontend();
+	expense.value = '';
 });
-
-$buttonPrint.addEventListener('click', () => {
-	var a = window.open('', '', '');
-	a.document.write('<html>');
-	a.document.write(
-		'<head> <style> html { font-family: system-ui, sans-serif;} h2{font-size:18px;} li{font-size:14px; font-weight: normal;} li.strike-through { text-decoration: line-through; opacity: 0.4; } </style>'
-	);
-	a.document.write('<body > <h2>Yazio - Shopping List<h2>');
-	a.document.write($shoppingList.innerHTML);
-	a.document.write('</body></html>');
-	a.document.close();
-	a.print();
-});
-
-$linkExampleData.addEventListener('click', () => {
-	$textarea.value = `Gemüseauflauf  mit Mandelcrunch
-Für 2 Portionen
-3 Kartoffeln, festkochend (270 g)
-1 Zwiebel (80 g)
-½ Brokkoli (170 g)
-½ Blumenkohl (500 g)
-Olivenöl (1 EL, 14 ml)
-Haferdrink, ungesüßt (40 ml)
-Hefeflocken (1 EL, 4 g)
-Frischkäse, vegan (90 g)
-Thymian, getrocknet (1 TL, 2 g)
-Knoblauchpulver (1 TL, 2 g)
-Pfeffer und Salz (to taste)
-4 Getrocknete Tomaten, in Öl (20 g)
-Basilikum, frisch (5 g)
-15 Mandeln (15 g)
-½ Zitrone, bio (40 g)
-Pankomehl (2 EL, 16 g)
-
-Rucolasalat mit Trauben
-Für 1 Portion
-Cashewkerne (30 g)
-Weintrauben, rot (100 g)
-Olivenöl (2 EL, 27 ml)
-Rotweinessig (1 EL, 16 ml)
-Pfeffer und Salz (to taste)
-Rucola (50 g)
-
-Schnelle Gnocchi Bowl
-Für 1 Portion
-Gnocchi (200 g)
-Kirschtomaten (80 g)
-½ Salatgurke (150 g)
-Pesto Verde (2 EL, 20 g)
-Feta (50 g)
-    `;
-});
-
-$buttonHideCrossed.addEventListener('click', () => {
-	const currentlyHidden = document.querySelector('#hideCrossed');
-	currentlyHidden ? currentlyHidden.remove() : addGlobalStyle('li.strike-through {display:none}');
-});
-
-function addClickListItemHandler() {
-	const listItem = $shoppingList.querySelectorAll('li');
-	for (let i = 0; i < listItem.length; i++) {
-		listItem[i].onclick = (event) => {
-			event.currentTarget.classList.toggle('strike-through');
-			localStorage.set($shoppingList.innerHTML);
-		};
-	}
-}
-
-function setCategory(name) {
-	let category = 'Unkategorisiert';
-	if (Category.VEGETABLES.items.some((item) => name.includes(item))) {
-		category = Category.VEGETABLES.name;
-	} else if (Category.HERBS.items.some((item) => name.includes(item))) {
-		category = Category.HERBS.name;
-	} else if (Category.COOLSHELF.items.some((item) => name.includes(item))) {
-		category = Category.COOLSHELF.name;
-	} else if (Category.DRYSHELF.items.some((item) => name.includes(item))) {
-		category = Category.DRYSHELF.name;
-	} else if (Category.DRINKS.items.some((item) => name.includes(item))) {
-		category = Category.DRINKS.name;
-	} else if (Category.BREAD.items.some((item) => name.includes(item))) {
-		category = Category.BREAD.name;
-	}
-	return category;
-}

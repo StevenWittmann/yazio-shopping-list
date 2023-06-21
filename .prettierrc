@@ -1,9 +1,10 @@
 {
 	"arrowParens": "always",
 	"bracketSameLine": true,
+	"jsxBracketSameLine": true,
 	"bracketSpacing": true,
 	"embeddedLanguageFormatting": "auto",
-	"htmlWhitespaceSensitivity": "strict",
+	"htmlWhitespaceSensitivity": "ignore",
 	"insertPragma": false,
 	"jsxSingleQuote": false,
 	"printWidth": 120,

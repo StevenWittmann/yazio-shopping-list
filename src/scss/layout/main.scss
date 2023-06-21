@@ -18,6 +18,9 @@
 
 	footer {
 		padding: 1rem;
-		text-align: center;
+		width: 100%;
+		max-width: 30rem;
+		display: flex;
+		justify-content: center;
 	}
 }
