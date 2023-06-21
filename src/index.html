@@ -16,7 +16,7 @@
 		<meta name="msapplication-TileColor" content="#da532c" />
 		<meta name="theme-color" content="#000000" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Mini Budget</title>
+		<title>Yazio - Shopping List</title>
 		<meta
 			name="description"
 			content="NutzerInnen der Yazio App können ihre Einkaufsliste mit dieser App zusammenfassen. Das heisst es wird eine Liste erstellt die nach Nahrungsmittelkategorie gruppiert ist, nicht nach Gericht. Viel Vergnügen!" />
@@ -24,39 +24,27 @@
 
 	<body>
 		<div class="main-layout">
-			<header><h2>Mini Budget</h2></header>
-			<main>
-				<section>
-					<div class="row">
-						<label>Startbudget</label>
-						<input id="startBudget" type="number" />
-					</div>
-					<div class="row">
-						<label>Tag des Geldeingangs</label>
-						<input id="dayOfPayment" min="1" max="31" type="number" />
-					</div>
-					<div class="row">
-						<span>Geld pro Tag (30 Tage)</span>
-						<span id="outputMoneyPerDay"></span>
-					</div>
-					<div class="row">
-						<label>Restbudget</label>
-						<input id="moneyLeft" disabled="disabled" />
-					</div>
-					<div class="row">
-						<span id="outputDaysTillMonthEnd"></span>
-						<span id="outputMoneyPerDayCalc"></span>
-					</div>
-					<div class="row"></div>
-					<div class="row">
-						<label>Ausgabe</label>
-						<input id="expense" type="number" />
-					</div>
-					<div class="row">
-						<button id="btnExpense" class="button button-primary">buchen</button>
-					</div>
+			<header><h2>Yazio - Shopping List</h2></header>
+			<main
+				><section class="import">
+					<textarea id="textarea"></textarea>
+					<button id="buttonSummarize" class="button button-primary">Zusammenfassung</button>
+					<button id="exampleData" class="button button-secondary">Zeige Beispiel Daten</button>
 				</section>
-			</main>
+				<section class="shopping-list hidden">
+					<ul id="shoppingList"></ul>
+					<div class="button-wrapper">
+						<button id="buttonNew" class="button button-primary button-new">⇦ Zurück</button>
+						<button id="buttonPrint" class="button button-secondary button-new">Drucken</button>
+					</div>
+					<div class="button-wrapper">
+						<label for="buttonHideCrossed">Verstecke Durchgestrichenes</label>
+						<label class="switch">
+							<input id="buttonHideCrossed" type="checkbox" />
+							<span class="slider round"></span>
+						</label>
+					</div> </section
+			></main>
 			<footer></footer>
 		</div>
 
